@@ -144,10 +144,48 @@ const login = async (credentials) => {
   // };
 // Update the updateProfile function
 
+// const updateProfile = async (userData) => {
+//   try {
+//     setIsLoading(true);
+//     console.log('Updating profile for user:', user._id);
+    
+//     // Check if userData is FormData or regular object
+//     const isFormData = userData instanceof FormData;
+    
+//     // Configure proper headers for the request
+//     const config = {
+//       headers: {
+//         'Content-Type': isFormData ? 'multipart/form-data' : 'application/json'
+//       }
+//     };
+    
+//     const response = await api.put(`/users/${user._id}`, userData, config);
+    
+//     if (response.data.success) {
+//       // Update the user state with new information
+//       setUser({
+//         ...user,
+//         ...response.data.data
+//       });
+      
+//       toast.success('Profile updated successfully');
+//       return { success: true, data: response.data.data };
+//     } else {
+//       throw new Error(response.data.message || 'Failed to update profile');
+//     }
+//   } catch (error) {
+//     console.error('Update profile error:', error);
+//     toast.error(error.response?.data?.message || 'Failed to update profile');
+//     return { success: false, error };
+//   } finally {
+//     setIsLoading(false);
+//   }
+// };
+
+// In your AuthContext.jsx file
 const updateProfile = async (userData) => {
   try {
     setIsLoading(true);
-    console.log('Updating profile for user:', user._id);
     
     // Check if userData is FormData or regular object
     const isFormData = userData instanceof FormData;
@@ -161,22 +199,32 @@ const updateProfile = async (userData) => {
     
     const response = await api.put(`/users/${user._id}`, userData, config);
     
-    if (response.data.success) {
-      // Update the user state with new information
-      setUser({
-        ...user,
-        ...response.data.data
-      });
+    if (response.data && response.data.success) {
+      // Make sure to refresh any cached images by adding a timestamp
+      let updatedUser = {...response.data.data};
       
-      toast.success('Profile updated successfully');
-      return { success: true, data: response.data.data };
+      // If there's a profile picture, add a timestamp to bust cache
+      if (updatedUser.profilePicture) {
+        const timestamp = new Date().getTime();
+        updatedUser.profilePicture = `${updatedUser.profilePicture}?t=${timestamp}`;
+      }
+      
+      // Update the user state with new information
+      setUser(prevUser => ({
+        ...prevUser,
+        ...updatedUser
+      }));
+      
+      return { success: true, data: updatedUser };
     } else {
-      throw new Error(response.data.message || 'Failed to update profile');
+      throw new Error(response.data?.message || 'Failed to update profile');
     }
   } catch (error) {
     console.error('Update profile error:', error);
-    toast.error(error.response?.data?.message || 'Failed to update profile');
-    return { success: false, error };
+    return { 
+      success: false, 
+      error: error 
+    };
   } finally {
     setIsLoading(false);
   }

@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
 @import "tailwindcss";
 
 /* Add aspect ratio styling for video container */
@@ -5,10 +7,7 @@
   position: relative;
   padding-bottom: 56.25%; /* 16:9 aspect ratio */
 }
-:root {
-  font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
-    Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-}
+
 
 body {
   font-family: 'Poppins', sans-serif;

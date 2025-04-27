@@ -307,7 +307,7 @@ const Reports = () => {
         }
       } catch (error) {
         console.error('Error fetching report data:', error);
-        toast.error('Could not load report data. Using sample data instead.');
+        // toast.error('Could not load report data. Using sample data instead.');
         
         // Use mock data as fallback
         const mockData = generateMockData();

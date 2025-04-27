@@ -77,6 +77,7 @@ const cors = require('cors');
 const mongoose = require('mongoose');
 const path = require('path');
 const errorHandler = require('./middleware/errorHandler');
+const multer = require('multer');
 
 // Routes
 const authRoutes = require('./routes/authRoutes');
@@ -100,6 +101,21 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// Set up multer for file uploads
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, 'uploads/');
+  },
+  filename: (req, file, cb) => {
+    cb(null, `${Date.now()}-${file.originalname}`);
+  }
+});
+
+// Create multer upload instance
+const upload = multer({ 
+  storage,
+  limits: { fileSize: 5 * 1024 * 1024 } // 5MB max file size
+});
 // Serve uploaded files
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
@@ -110,10 +126,15 @@ mongoose.connect(process.env.MONGODB_URI)
 
 // API routes
 app.use('/api/auth', authRoutes);
+// Apply the multer middleware to the user update route
+app.use('/api/users/:id', upload.single('profilePicture'));
+
 app.use('/api/courses', courseRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/courses/:courseId/discussions', discussionRoutes);
 app.use('/api/upload', uploadRoutes);
+app.use('/api/users', require('./routes/userRoutes'));
+
 app.use('/api/payments', paymentRoutes);
 app.use('/api/analytics', analyticsRoutes);
 app.use('/api/notifications', notificationRoutes);

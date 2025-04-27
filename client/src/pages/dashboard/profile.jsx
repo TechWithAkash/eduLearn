@@ -704,62 +704,111 @@ const Profile = () => {
     }
   };
 
-  const handleProfileUpdate = async (e) => {
-    e.preventDefault();
+  // const handleProfileUpdate = async (e) => {
+  //   e.preventDefault();
     
-    // Check if any data has changed
-    if (
-      formData.name === user?.name &&
-      formData.bio === user?.bio &&
-      formData.phone === user?.phone &&
-      formData.address === user?.address &&
-      !formData.profilePicture
-    ) {
-      toast.info('No changes to save');
-      return;
-    }
+  //   // Check if any data has changed
+  //   if (
+  //     formData.name === user?.name &&
+  //     formData.bio === user?.bio &&
+  //     formData.phone === user?.phone &&
+  //     formData.address === user?.address &&
+  //     !formData.profilePicture
+  //   ) {
+  //     toast.info('No changes to save');
+  //     return;
+  //   }
     
-    setIsLoading(true);
+  //   setIsLoading(true);
     
-    try {
-      // Create form data for file upload
-      const data = new FormData();
+  //   try {
+  //     // Create form data for file upload
+  //     const data = new FormData();
       
-      // Only append fields that have values
-      if (formData.name) data.append('name', formData.name);
-      if (formData.bio || formData.bio === '') data.append('bio', formData.bio);
-      if (formData.phone || formData.phone === '') data.append('phone', formData.phone);
-      if (formData.address || formData.address === '') data.append('address', formData.address);
+  //     // Only append fields that have values
+  //     if (formData.name) data.append('name', formData.name);
+  //     if (formData.bio || formData.bio === '') data.append('bio', formData.bio);
+  //     if (formData.phone || formData.phone === '') data.append('phone', formData.phone);
+  //     if (formData.address || formData.address === '') data.append('address', formData.address);
       
-      if (formData.profilePicture) {
-        data.append('profilePicture', formData.profilePicture);
-      }
+  //     if (formData.profilePicture) {
+  //       data.append('profilePicture', formData.profilePicture);
+  //     }
       
-      // Make sure FormData is not empty
-      if ([...data.entries()].length === 0) {
-        toast.error('No data provided for update');
-        setIsLoading(false);
-        return;
-      }
+  //     // Make sure FormData is not empty
+  //     if ([...data.entries()].length === 0) {
+  //       toast.error('No data provided for update');
+  //       setIsLoading(false);
+  //       return;
+  //     }
       
-      // Log what's being sent (for debugging)
-      console.log('Sending update with data:', [...data.entries()]);
+  //     // Log what's being sent (for debugging)
+  //     console.log('Sending update with data:', [...data.entries()]);
       
-      const result = await updateProfile(data);
+  //     const result = await updateProfile(data);
       
-      if (result && result.success) {
-        toast.success('Profile updated successfully');
-      } else {
-        throw new Error(result?.error?.message || 'Failed to update profile');
-      }
-    } catch (error) {
-      console.error('Failed to update profile:', error);
-      toast.error(error.response?.data?.message || 'Failed to update profile');
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  //     if (result && result.success) {
+  //       toast.success('Profile updated successfully');
+  //     } else {
+  //       throw new Error(result?.error?.message || 'Failed to update profile');
+  //     }
+  //   } catch (error) {
+  //     console.error('Failed to update profile:', error);
+  //     toast.error(error.response?.data?.message || 'Failed to update profile');
+  //   } finally {
+  //     setIsLoading(false);
+  //   }
+  // };
 
+
+  // Update the handleProfileUpdate function to properly handle the image update
+
+const handleProfileUpdate = async (e) => {
+  e.preventDefault();
+  
+  setIsLoading(true);
+  
+  try {
+    // Create form data for file upload
+    const data = new FormData();
+    
+    // Only append fields that have values or are explicitly empty strings
+    data.append('name', formData.name || '');
+    data.append('bio', formData.bio || '');
+    data.append('phone', formData.phone || '');
+    data.append('address', formData.address || '');
+    
+    if (formData.profilePicture) {
+      data.append('profilePicture', formData.profilePicture);
+    }
+    
+    // Log what's being sent
+    console.log('Sending form data with these entries:');
+    for (let [key, value] of data.entries()) {
+      console.log(key, value);
+    }
+    
+    const result = await updateProfile(data);
+    
+    if (result && result.success) {
+      // Update the previewImage with the new profile picture URL from the server response
+      if (result.data && result.data.profilePicture) {
+        // Force image refresh by adding a timestamp query parameter
+        const timestamp = new Date().getTime();
+        setPreviewImage(`${result.data.profilePicture}?t=${timestamp}`);
+      }
+      
+      toast.success('Profile updated successfully');
+    } else {
+      throw new Error(result?.error?.message || 'Failed to update profile');
+    }
+  } catch (error) {
+    console.error('Failed to update profile:', error);
+    toast.error(error.message || 'Failed to update profile');
+  } finally {
+    setIsLoading(false);
+  }
+};
   const handlePasswordChange = async (e) => {
     e.preventDefault();
     

@@ -216,7 +216,8 @@ const Header = () => {
                   <path d="M4 16L12 20L20 16" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
               </div>
-              <span className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 text-transparent bg-clip-text">LMS Portal</span>
+              <span className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 text-transparent bg-clip-text">
+              eduLearn</span>
             </Link>
             
             <nav className="hidden md:ml-8 md:flex md:space-x-6">

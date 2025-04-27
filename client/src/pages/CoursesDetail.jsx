@@ -1502,7 +1502,7 @@ export default CourseDetail;
 //             instructor: {
 //               _id: "inst123",
 //               name: "Professor Sarah Johnson",
-//               email: "sarah.j@edulearn.com"
+//               email: "sarah.j@eduLearn.com"
 //             },
 //             averageRating: 4.7,
 //             enrolledStudents: ["123", "456"],

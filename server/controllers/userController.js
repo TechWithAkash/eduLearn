@@ -294,7 +294,8 @@ const createUser = async (req, res) => {
 //   }
 // };
 
-// In userController.js
+// Fix the updateUser function to properly handle missing req.body
+
 const updateUser = async (req, res) => {
   try {
     // Check permission
@@ -305,14 +306,22 @@ const updateUser = async (req, res) => {
       });
     }
     
+    console.log('Update user request body:', req.body);
+    console.log('Update user request file:', req.file);
+    
     // Create update data object
     const updateData = {};
     
-    // Add fields that may be in the form data
-    if (req.body.name) updateData.name = req.body.name;
-    if (req.body.bio !== undefined) updateData.bio = req.body.bio;
-    if (req.body.phone !== undefined) updateData.phone = req.body.phone;
-    if (req.body.address !== undefined) updateData.address = req.body.address;
+    // Safely add fields that may be in the form data
+    if (req.body && req.body.name) updateData.name = req.body.name;
+    if (req.body && req.body.bio !== undefined) updateData.bio = req.body.bio;
+    if (req.body && req.body.phone !== undefined) updateData.phone = req.body.phone;
+    if (req.body && req.body.address !== undefined) updateData.address = req.body.address;
+    
+    // Only admin can update role
+    if (req.user.role === 'admin' && req.body && req.body.role) {
+      updateData.role = req.body.role;
+    }
     
     // Handle profile picture if it exists in req.file
     if (req.file) {
