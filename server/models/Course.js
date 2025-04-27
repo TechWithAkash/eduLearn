@@ -208,7 +208,8 @@ const CourseSchema = new mongoose.Schema({
       'Marketing',
       'Business',
       'Personal Development',
-      'Other'
+      'Other',
+      'Computer Science',
     ],
     required: [true, 'Please select a category']
   },

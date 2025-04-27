@@ -121,8 +121,70 @@ const generateToken = (id) => {
   });
 };
 
+// Add this function to your existing auth.js file
+
+// @desc    Create admin user (Admin only)
+// @route   POST /api/auth/create-admin
+// @access  Private/Admin
+const createAdmin = async (req, res) => {
+  try {
+    // Only existing admins can create other admins
+    if (req.user.role !== 'admin') {
+      return res.status(403).json({
+        success: false,
+        message: 'Only admins can create admin users'
+      });
+    }
+    
+    const { name, email, password } = req.body;
+    
+    // Validation
+    if (!name || !email || !password) {
+      return res.status(400).json({
+        success: false,
+        message: 'Please provide name, email and password'
+      });
+    }
+    
+    // Check if user exists
+    const userExists = await User.findOne({ email });
+    
+    if (userExists) {
+      return res.status(400).json({
+        success: false,
+        message: 'User with this email already exists'
+      });
+    }
+    
+    // Create admin user
+    const user = await User.create({
+      name,
+      email,
+      password,
+      role: 'admin'
+    });
+    
+    res.status(201).json({
+      success: true,
+      data: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        role: user.role
+      }
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      success: false,
+      message: 'Server Error'
+    });
+  }
+};
+
 module.exports = {
   register,
   login,
-  getMe
+  getMe,
+  createAdmin,
 };

@@ -68,8 +68,23 @@ UserSchema.methods.getSignedJwtToken = function() {
 };
 
 // Match user entered password to hashed password in database
+// UserSchema.methods.matchPassword = async function(enteredPassword) {
+//   return await bcrypt.compare(enteredPassword, this.password);
+// };
+
+// Match user entered password to hashed password in database
+// Find the matchPassword method and replace it with this:
+
 UserSchema.methods.matchPassword = async function(enteredPassword) {
-  return await bcrypt.compare(enteredPassword, this.password);
+  try {
+    // Direct comparison using bcrypt.compare
+    const result = await bcrypt.compare(enteredPassword, this.password);
+    console.log(`Password comparison result: ${result}`);
+    return result;
+  } catch (error) {
+    console.error('Password comparison error:', error);
+    return false;
+  }
 };
 
 module.exports = mongoose.model('User', UserSchema);

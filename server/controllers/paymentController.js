@@ -120,6 +120,7 @@
 //   verifyPayment
 // };
 
+// server/controllers/paymentController.js
 const Razorpay = require('razorpay');
 const crypto = require('crypto');
 const Course = require('../models/Course');
