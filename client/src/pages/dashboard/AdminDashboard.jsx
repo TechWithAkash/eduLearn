@@ -429,24 +429,390 @@
 
 // export default AdminDashboard;
 
-import React, { useState, useEffect } from 'react';
+// import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { api } from '../../../services/api';
 import { useAuth } from '../../../contexts/AuthContext';
 import LoadingSpinner from '../../common/LoadingSpinner';
 import toast from 'react-hot-toast';
 
-// If you're using recharts for charts, import these
-// import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+// // If you're using recharts for charts, import these
+
+// // import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+
+// const AdminDashboard = () => {
+//   const { user } = useAuth();
+//   const [isLoading, setIsLoading] = useState(true);
+//   const [stats, setStats] = useState({
+//     users: { total: 0, students: 0, tutors: 0, admins: 0 },
+//     courses: { total: 0, published: 0, drafts: 0 },
+//     enrollments: { total: 0, thisMonth: 0 },
+//     revenue: { total: 0, thisMonth: 0 },
+//   });
+//   const [recentUsers, setRecentUsers] = useState([]);
+//   const [recentCourses, setRecentCourses] = useState([]);
+
+//   useEffect(() => {
+//     const fetchDashboardData = async () => {
+//       try {
+//         setIsLoading(true);
+        
+//         // Fetch admin dashboard stats
+//         const statsResponse = await api.get('/analytics/admin/stats');
+//         if (statsResponse.data.success) {
+//           setStats(statsResponse.data.data);
+//         }
+        
+//         // Fetch recent users
+//         const recentUsersResponse = await api.get('/users/recent');
+//         if (recentUsersResponse.data.success) {
+//           setRecentUsers(recentUsersResponse.data.data);
+//         }
+        
+//         // Fetch recent courses
+//         const recentCoursesResponse = await api.get('/courses/recent');
+//         if (recentCoursesResponse.data.success) {
+//           setRecentCourses(recentCoursesResponse.data.data);
+//         }
+//       } catch (error) {
+//         console.error('Error fetching admin dashboard data:', error);
+//         toast.error('Failed to load dashboard data');
+//       } finally {
+//         setIsLoading(false);
+//       }
+//     };
+    
+//     fetchDashboardData();
+//   }, []);
+
+//   if (isLoading) {
+//     return (
+//       <div className="flex items-center justify-center h-screen">
+//         <LoadingSpinner size="large" />
+//       </div>
+//     );
+//   }
+
+//   return (
+//     <div className="container mx-auto px-4 py-8">
+//       <div className="mb-8">
+//         <h1 className="text-3xl font-bold text-gray-800">Admin Dashboard</h1>
+//         <p className="text-gray-600">Welcome back, {user?.name}. Here's what's happening with your platform.</p>
+//       </div>
+      
+//       {/* Stats Cards */}
+//       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+//         {/* Users Stats */}
+//         <div className="bg-white rounded-lg shadow-md p-6 border-l-4 border-blue-500">
+//           <div className="flex justify-between">
+//             <div>
+//               <p className="text-sm font-medium text-gray-500">Total Users</p>
+//               <p className="text-2xl font-bold text-gray-800">{stats.users.total}</p>
+//               <div className="flex mt-2 space-x-2 text-xs">
+//                 <span className="px-2 py-1 bg-blue-100 text-blue-800 rounded-full">{stats.users.students} Students</span>
+//                 <span className="px-2 py-1 bg-green-100 text-green-800 rounded-full">{stats.users.tutors} Tutors</span>
+//               </div>
+//             </div>
+//             <div className="p-3 bg-blue-100 rounded-full">
+//               <svg className="w-8 h-8 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+//                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+//               </svg>
+//             </div>
+//           </div>
+//           <Link to="/admin/users" className="text-blue-600 text-sm flex items-center mt-4">
+//             Manage Users 
+//             <svg className="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+//               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
+//             </svg>
+//           </Link>
+//         </div>
+        
+//         {/* Courses Stats */}
+//         <div className="bg-white rounded-lg shadow-md p-6 border-l-4 border-green-500">
+//           <div className="flex justify-between">
+//             <div>
+//               <p className="text-sm font-medium text-gray-500">Total Courses</p>
+//               <p className="text-2xl font-bold text-gray-800">{stats.courses.total}</p>
+//               <div className="flex mt-2 space-x-2 text-xs">
+//                 <span className="px-2 py-1 bg-green-100 text-green-800 rounded-full">{stats.courses.published} Published</span>
+//                 <span className="px-2 py-1 bg-yellow-100 text-yellow-800 rounded-full">{stats.courses.drafts} Drafts</span>
+//               </div>
+//             </div>
+//             <div className="p-3 bg-green-100 rounded-full">
+//               <svg className="w-8 h-8 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+//                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+//               </svg>
+//             </div>
+//           </div>
+//           <Link to="/admin/courses" className="text-green-600 text-sm flex items-center mt-4">
+//             Manage Courses
+//             <svg className="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+//               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
+//             </svg>
+//           </Link>
+//         </div>
+        
+//         {/* Enrollments Stats */}
+//         <div className="bg-white rounded-lg shadow-md p-6 border-l-4 border-purple-500">
+//           <div className="flex justify-between">
+//             <div>
+//               <p className="text-sm font-medium text-gray-500">Total Enrollments</p>
+//               <p className="text-2xl font-bold text-gray-800">{stats.enrollments.total}</p>
+//               <div className="mt-2 text-xs">
+//                 <span className="px-2 py-1 bg-purple-100 text-purple-800 rounded-full">
+//                   +{stats.enrollments.thisMonth} this month
+//                 </span>
+//               </div>
+//             </div>
+//             <div className="p-3 bg-purple-100 rounded-full">
+//               <svg className="w-8 h-8 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+//                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+//               </svg>
+//             </div>
+//           </div>
+//           <Link to="/admin/enrollments" className="text-purple-600 text-sm flex items-center mt-4">
+//             View Enrollments
+//             <svg className="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+//               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
+//             </svg>
+//           </Link>
+//         </div>
+        
+//         {/* Revenue Stats */}
+//         <div className="bg-white rounded-lg shadow-md p-6 border-l-4 border-yellow-500">
+//           <div className="flex justify-between">
+//             <div>
+//               <p className="text-sm font-medium text-gray-500">Total Revenue</p>
+//               <p className="text-2xl font-bold text-gray-800">${stats.revenue.total.toLocaleString()}</p>
+//               <div className="mt-2 text-xs">
+//                 <span className="px-2 py-1 bg-yellow-100 text-yellow-800 rounded-full">
+//                   ${stats.revenue.thisMonth.toLocaleString()} this month
+//                 </span>
+//               </div>
+//             </div>
+//             <div className="p-3 bg-yellow-100 rounded-full">
+//               <svg className="w-8 h-8 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+//                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+//               </svg>
+//             </div>
+//           </div>
+//           <Link to="/admin/finance" className="text-yellow-600 text-sm flex items-center mt-4">
+//             Financial Reports
+//             <svg className="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+//               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
+//             </svg>
+//           </Link>
+//         </div>
+//       </div>
+      
+//       {/* Two columns layout for Recent Users and Courses */}
+//       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+//         {/* Recent Users */}
+//         <div className="bg-white rounded-lg shadow-md overflow-hidden">
+//           <div className="p-4 bg-gray-50 border-b border-gray-200">
+//             <h2 className="text-lg font-semibold text-gray-800">Recently Joined Users</h2>
+//           </div>
+//           <div className="divide-y divide-gray-200">
+//             {recentUsers.map(user => (
+//               <div key={user._id} className="p-4 hover:bg-gray-50 transition duration-150">
+//                 <div className="flex items-center">
+//                   <div className="h-10 w-10 flex-shrink-0">
+//                     {user.profilePicture ? (
+//                       <img 
+//                         src={user.profilePicture} 
+//                         alt={user.name} 
+//                         className="h-10 w-10 rounded-full object-cover"
+//                       />
+//                     ) : (
+//                       <div className="h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center">
+//                         <span className="text-blue-600 font-medium text-sm">
+//                           {user.name.split(' ').map(n => n[0]).join('')}
+//                         </span>
+//                       </div>
+//                     )}
+//                   </div>
+//                   <div className="ml-3">
+//                     <p className="text-sm font-medium text-gray-900">{user.name}</p>
+//                     <p className="text-sm text-gray-500">{user.email}</p>
+//                   </div>
+//                   <div className="ml-auto flex items-center">
+//                     <span className={`px-2 py-1 text-xs rounded-full ${
+//                       user.role === 'student' ? 'bg-blue-100 text-blue-800' : 
+//                       user.role === 'tutor' ? 'bg-green-100 text-green-800' : 
+//                       'bg-purple-100 text-purple-800'
+//                     }`}>
+//                       {user.role}
+//                     </span>
+//                     <span className="ml-2 text-xs text-gray-500">
+//                       {new Date(user.createdAt).toLocaleDateString()}
+//                     </span>
+//                   </div>
+//                 </div>
+//               </div>
+//             ))}
+//           </div>
+//           <div className="p-3 bg-gray-50 border-t border-gray-200">
+//             <Link to="/admin/users" className="text-blue-600 text-sm flex items-center justify-center">
+//               View All Users
+//               <svg className="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+//                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 7l5 5-5 5M5 7l5 5-5 5" />
+//               </svg>
+//             </Link>
+//           </div>
+//         </div>
+        
+//         {/* Recent Courses */}
+//         <div className="bg-white rounded-lg shadow-md overflow-hidden">
+//           <div className="p-4 bg-gray-50 border-b border-gray-200">
+//             <h2 className="text-lg font-semibold text-gray-800">Recently Added Courses</h2>
+//           </div>
+//           <div className="divide-y divide-gray-200">
+//             {recentCourses.map(course => (
+//               <div key={course._id} className="p-4 hover:bg-gray-50 transition duration-150">
+//                 <div className="flex">
+//                   <div className="h-16 w-24 flex-shrink-0">
+//                     {course.coverImage ? (
+//                       <img 
+//                         src={course.coverImage} 
+//                         alt={course.title} 
+//                         className="h-16 w-24 rounded object-cover"
+//                       />
+//                     ) : (
+//                       <div className="h-16 w-24 rounded bg-gray-200 flex items-center justify-center">
+//                         <svg className="h-8 w-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+//                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+//                         </svg>
+//                       </div>
+//                     )}
+//                   </div>
+//                   <div className="ml-3 flex-1">
+//                     <p className="text-sm font-medium text-gray-900">{course.title}</p>
+//                     <p className="text-xs text-gray-500">{course.category}</p>
+//                     <div className="mt-1 flex items-center">
+//                       <span className={`px-2 py-0.5 text-xs rounded-full ${
+//                         course.isPublished ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'
+//                       }`}>
+//                         {course.isPublished ? 'Published' : 'Draft'}
+//                       </span>
+//                       <span className="ml-2 text-xs text-gray-500">
+//                         by {course.instructor?.name || 'Unknown'}
+//                       </span>
+//                     </div>
+//                   </div>
+//                   <div className="ml-auto flex flex-col items-end">
+//                     <span className="text-sm font-semibold">{course.studentsCount || 0} students</span>
+//                     <span className="text-xs text-gray-500">
+//                       {new Date(course.createdAt).toLocaleDateString()}
+//                     </span>
+//                   </div>
+//                 </div>
+//               </div>
+//             ))}
+//           </div>
+//           <div className="p-3 bg-gray-50 border-t border-gray-200">
+//             <Link to="/admin/courses" className="text-green-600 text-sm flex items-center justify-center">
+//               View All Courses
+//               <svg className="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+//                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 7l5 5-5 5M5 7l5 5-5 5" />
+//               </svg>
+//             </Link>
+//           </div>
+//         </div>
+//       </div>
+      
+//       {/* Quick Actions */}
+//       <div className="bg-white rounded-lg shadow-md p-6 mb-8">
+//         <h2 className="text-xl font-semibold text-gray-800 mb-4">Quick Actions</h2>
+//         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+//           <Link to="/admin/users/new" className="p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition duration-150 flex flex-col items-center text-center">
+//             <svg className="h-8 w-8 text-blue-500 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+//               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
+//             </svg>
+//             <span className="text-sm font-medium">Add New User</span>
+//           </Link>
+          
+//           <Link to="/admin/courses/new" className="p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition duration-150 flex flex-col items-center text-center">
+//             <svg className="h-8 w-8 text-green-500 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+//               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+//             </svg>
+//             <span className="text-sm font-medium">Create Course</span>
+//           </Link>
+          
+//           <Link to="/admin/reports" className="p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition duration-150 flex flex-col items-center text-center">
+//             <svg className="h-8 w-8 text-purple-500 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+//               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+//             </svg>
+//             <span className="text-sm font-medium">Generate Reports</span>
+//           </Link>
+          
+//           <Link to="/admin/settings" className="p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition duration-150 flex flex-col items-center text-center">
+//             <svg className="h-8 w-8 text-gray-500 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+//               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+//               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+//             </svg>
+//             <span className="text-sm font-medium">Platform Settings</span>
+//           </Link>
+//         </div>
+//       </div>
+      
+//       {/* System Health */}
+//       <div className="bg-white rounded-lg shadow-md p-6">
+//         <h2 className="text-xl font-semibold text-gray-800 mb-4">System Health</h2>
+//         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+//           <div className="border border-gray-200 rounded-lg p-4">
+//             <div className="flex items-center justify-between mb-3">
+//               <h3 className="text-sm font-medium text-gray-700">Server Status</h3>
+//               <span className="px-2 py-1 text-xs rounded-full bg-green-100 text-green-800">Operational</span>
+//             </div>
+//             <div className="h-2 w-full bg-gray-200 rounded-full overflow-hidden">
+//               <div className="bg-green-500 h-full rounded-full" style={{ width: '98%' }}></div>
+//             </div>
+//             <p className="text-xs text-gray-500 mt-2">98% Uptime</p>
+//           </div>
+          
+//           <div className="border border-gray-200 rounded-lg p-4">
+//             <div className="flex items-center justify-between mb-3">
+//               <h3 className="text-sm font-medium text-gray-700">Database</h3>
+//               <span className="px-2 py-1 text-xs rounded-full bg-green-100 text-green-800">Healthy</span>
+//             </div>
+//             <div className="h-2 w-full bg-gray-200 rounded-full overflow-hidden">
+//               <div className="bg-blue-500 h-full rounded-full" style={{ width: '65%' }}></div>
+//             </div>
+//             <p className="text-xs text-gray-500 mt-2">65% Storage Used</p>
+//           </div>
+          
+//           <div className="border border-gray-200 rounded-lg p-4">
+//             <div className="flex items-center justify-between mb-3">
+//               <h3 className="text-sm font-medium text-gray-700">API Requests</h3>
+//               <span className="px-2 py-1 text-xs rounded-full bg-green-100 text-green-800">Normal</span>
+//             </div>
+//             <div className="h-2 w-full bg-gray-200 rounded-full overflow-hidden">
+//               <div className="bg-purple-500 h-full rounded-full" style={{ width: '42%' }}></div>
+//             </div>
+//             <p className="text-xs text-gray-500 mt-2">42% of Capacity</p>
+//           </div>
+//         </div>
+//       </div>
+//     </div>
+//   );
+// };
+
+// export default AdminDashboard;
+
+import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
+import { api } from '../../services/api';
+import { useAuth } from '../../contexts/AuthContext';
+import LoadingSpinner from '../../components/common/LoadingSpinner';
 
 const AdminDashboard = () => {
   const { user } = useAuth();
   const [isLoading, setIsLoading] = useState(true);
   const [stats, setStats] = useState({
-    users: { total: 0, students: 0, tutors: 0, admins: 0 },
-    courses: { total: 0, published: 0, drafts: 0 },
-    enrollments: { total: 0, thisMonth: 0 },
-    revenue: { total: 0, thisMonth: 0 },
+    totalUsers: 0,
+    totalCourses: 0,
+    activeUsers: 0,
+    totalRevenue: 0
   });
   const [recentUsers, setRecentUsers] = useState([]);
   const [recentCourses, setRecentCourses] = useState([]);
@@ -456,340 +822,240 @@ const AdminDashboard = () => {
       try {
         setIsLoading(true);
         
-        // Fetch admin dashboard stats
-        const statsResponse = await api.get('/analytics/admin/stats');
-        if (statsResponse.data.success) {
-          setStats(statsResponse.data.data);
-        }
+        // Fetch users
+        const usersRes = await api.get('/users');
+        const users = usersRes.data.data || [];
         
-        // Fetch recent users
-        const recentUsersResponse = await api.get('/users/recent');
-        if (recentUsersResponse.data.success) {
-          setRecentUsers(recentUsersResponse.data.data);
-        }
+        // Fetch courses
+        const coursesRes = await api.get('/courses');
+        const courses = coursesRes.data.data || [];
         
-        // Fetch recent courses
-        const recentCoursesResponse = await api.get('/courses/recent');
-        if (recentCoursesResponse.data.success) {
-          setRecentCourses(recentCoursesResponse.data.data);
-        }
+        // Set stats
+        setStats({
+          totalUsers: users.length,
+          totalCourses: courses.length,
+          activeUsers: users.filter(user => user.isActive).length,
+          totalRevenue: 25600 // Mock data
+        });
+        
+        // Get recent users
+        const sortedUsers = [...users].sort((a, b) => 
+          new Date(b.createdAt) - new Date(a.createdAt)
+        );
+        setRecentUsers(sortedUsers.slice(0, 5));
+        
+        // Get recent courses
+        const sortedCourses = [...courses].sort((a, b) => 
+          new Date(b.createdAt) - new Date(a.createdAt)
+        );
+        setRecentCourses(sortedCourses.slice(0, 5));
+        
       } catch (error) {
-        console.error('Error fetching admin dashboard data:', error);
-        toast.error('Failed to load dashboard data');
+        console.error('Error fetching dashboard data:', error);
       } finally {
         setIsLoading(false);
       }
     };
-    
+
     fetchDashboardData();
   }, []);
 
   if (isLoading) {
-    return (
-      <div className="flex items-center justify-center h-screen">
-        <LoadingSpinner size="large" />
-      </div>
-    );
+    return <LoadingSpinner />;
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-800">Admin Dashboard</h1>
-        <p className="text-gray-600">Welcome back, {user?.name}. Here's what's happening with your platform.</p>
-      </div>
+    <div>
+      <h1 className="text-2xl font-bold text-gray-800 mb-6">Dashboard</h1>
       
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-        {/* Users Stats */}
-        <div className="bg-white rounded-lg shadow-md p-6 border-l-4 border-blue-500">
-          <div className="flex justify-between">
-            <div>
-              <p className="text-sm font-medium text-gray-500">Total Users</p>
-              <p className="text-2xl font-bold text-gray-800">{stats.users.total}</p>
-              <div className="flex mt-2 space-x-2 text-xs">
-                <span className="px-2 py-1 bg-blue-100 text-blue-800 rounded-full">{stats.users.students} Students</span>
-                <span className="px-2 py-1 bg-green-100 text-green-800 rounded-full">{stats.users.tutors} Tutors</span>
-              </div>
-            </div>
-            <div className="p-3 bg-blue-100 rounded-full">
-              <svg className="w-8 h-8 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+        <div className="bg-white rounded-lg shadow p-6">
+          <div className="flex items-center">
+            <div className="p-3 rounded-full bg-indigo-100 text-indigo-500 mr-4">
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
               </svg>
             </div>
+            <div>
+              <p className="text-sm text-gray-500 uppercase">Total Users</p>
+              <p className="text-2xl font-bold text-gray-800">{stats.totalUsers}</p>
+            </div>
           </div>
-          <Link to="/admin/users" className="text-blue-600 text-sm flex items-center mt-4">
-            Manage Users 
-            <svg className="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
-            </svg>
-          </Link>
         </div>
         
-        {/* Courses Stats */}
-        <div className="bg-white rounded-lg shadow-md p-6 border-l-4 border-green-500">
-          <div className="flex justify-between">
-            <div>
-              <p className="text-sm font-medium text-gray-500">Total Courses</p>
-              <p className="text-2xl font-bold text-gray-800">{stats.courses.total}</p>
-              <div className="flex mt-2 space-x-2 text-xs">
-                <span className="px-2 py-1 bg-green-100 text-green-800 rounded-full">{stats.courses.published} Published</span>
-                <span className="px-2 py-1 bg-yellow-100 text-yellow-800 rounded-full">{stats.courses.drafts} Drafts</span>
-              </div>
-            </div>
-            <div className="p-3 bg-green-100 rounded-full">
-              <svg className="w-8 h-8 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <div className="bg-white rounded-lg shadow p-6">
+          <div className="flex items-center">
+            <div className="p-3 rounded-full bg-green-100 text-green-500 mr-4">
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
               </svg>
             </div>
+            <div>
+              <p className="text-sm text-gray-500 uppercase">Total Courses</p>
+              <p className="text-2xl font-bold text-gray-800">{stats.totalCourses}</p>
+            </div>
           </div>
-          <Link to="/admin/courses" className="text-green-600 text-sm flex items-center mt-4">
-            Manage Courses
-            <svg className="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
-            </svg>
-          </Link>
         </div>
         
-        {/* Enrollments Stats */}
-        <div className="bg-white rounded-lg shadow-md p-6 border-l-4 border-purple-500">
-          <div className="flex justify-between">
-            <div>
-              <p className="text-sm font-medium text-gray-500">Total Enrollments</p>
-              <p className="text-2xl font-bold text-gray-800">{stats.enrollments.total}</p>
-              <div className="mt-2 text-xs">
-                <span className="px-2 py-1 bg-purple-100 text-purple-800 rounded-full">
-                  +{stats.enrollments.thisMonth} this month
-                </span>
-              </div>
-            </div>
-            <div className="p-3 bg-purple-100 rounded-full">
-              <svg className="w-8 h-8 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+        <div className="bg-white rounded-lg shadow p-6">
+          <div className="flex items-center">
+            <div className="p-3 rounded-full bg-yellow-100 text-yellow-500 mr-4">
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
               </svg>
             </div>
+            <div>
+              <p className="text-sm text-gray-500 uppercase">Active Users</p>
+              <p className="text-2xl font-bold text-gray-800">{stats.activeUsers}</p>
+            </div>
           </div>
-          <Link to="/admin/enrollments" className="text-purple-600 text-sm flex items-center mt-4">
-            View Enrollments
-            <svg className="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
-            </svg>
-          </Link>
         </div>
         
-        {/* Revenue Stats */}
-        <div className="bg-white rounded-lg shadow-md p-6 border-l-4 border-yellow-500">
-          <div className="flex justify-between">
-            <div>
-              <p className="text-sm font-medium text-gray-500">Total Revenue</p>
-              <p className="text-2xl font-bold text-gray-800">${stats.revenue.total.toLocaleString()}</p>
-              <div className="mt-2 text-xs">
-                <span className="px-2 py-1 bg-yellow-100 text-yellow-800 rounded-full">
-                  ${stats.revenue.thisMonth.toLocaleString()} this month
-                </span>
-              </div>
-            </div>
-            <div className="p-3 bg-yellow-100 rounded-full">
-              <svg className="w-8 h-8 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <div className="bg-white rounded-lg shadow p-6">
+          <div className="flex items-center">
+            <div className="p-3 rounded-full bg-blue-100 text-blue-500 mr-4">
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
             </div>
+            <div>
+              <p className="text-sm text-gray-500 uppercase">Total Revenue</p>
+              <p className="text-2xl font-bold text-gray-800">${stats.totalRevenue.toLocaleString()}</p>
+            </div>
           </div>
-          <Link to="/admin/finance" className="text-yellow-600 text-sm flex items-center mt-4">
-            Financial Reports
-            <svg className="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
-            </svg>
-          </Link>
         </div>
       </div>
       
-      {/* Two columns layout for Recent Users and Courses */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
-        {/* Recent Users */}
-        <div className="bg-white rounded-lg shadow-md overflow-hidden">
-          <div className="p-4 bg-gray-50 border-b border-gray-200">
-            <h2 className="text-lg font-semibold text-gray-800">Recently Joined Users</h2>
-          </div>
-          <div className="divide-y divide-gray-200">
-            {recentUsers.map(user => (
-              <div key={user._id} className="p-4 hover:bg-gray-50 transition duration-150">
-                <div className="flex items-center">
-                  <div className="h-10 w-10 flex-shrink-0">
-                    {user.profilePicture ? (
-                      <img 
-                        src={user.profilePicture} 
-                        alt={user.name} 
-                        className="h-10 w-10 rounded-full object-cover"
-                      />
-                    ) : (
-                      <div className="h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center">
-                        <span className="text-blue-600 font-medium text-sm">
-                          {user.name.split(' ').map(n => n[0]).join('')}
-                        </span>
+      {/* Recent Users */}
+      <div className="bg-white rounded-lg shadow mb-8">
+        <div className="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
+          <h2 className="text-lg font-semibold text-gray-800">Recent Users</h2>
+          <Link to="/dashboard/users" className="text-blue-600 hover:text-blue-800 text-sm font-medium">
+            View All
+          </Link>
+        </div>
+        <div className="overflow-x-auto">
+          <table className="min-w-full divide-y divide-gray-200">
+            <thead className="bg-gray-50">
+              <tr>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Name
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Email
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Role
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Joined
+                </th>
+              </tr>
+            </thead>
+            <tbody className="bg-white divide-y divide-gray-200">
+              {recentUsers.map(user => (
+                <tr key={user._id}>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div className="flex items-center">
+                      <div className="flex-shrink-0 h-10 w-10 rounded-full bg-gray-200 flex items-center justify-center">
+                        <span className="font-medium text-gray-600">{user.name.charAt(0)}</span>
                       </div>
-                    )}
-                  </div>
-                  <div className="ml-3">
-                    <p className="text-sm font-medium text-gray-900">{user.name}</p>
-                    <p className="text-sm text-gray-500">{user.email}</p>
-                  </div>
-                  <div className="ml-auto flex items-center">
-                    <span className={`px-2 py-1 text-xs rounded-full ${
-                      user.role === 'student' ? 'bg-blue-100 text-blue-800' : 
+                      <div className="ml-4">
+                        <div className="text-sm font-medium text-gray-900">{user.name}</div>
+                      </div>
+                    </div>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div className="text-sm text-gray-500">{user.email}</div>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
+                      ${user.role === 'admin' ? 'bg-purple-100 text-purple-800' : 
                       user.role === 'tutor' ? 'bg-green-100 text-green-800' : 
-                      'bg-purple-100 text-purple-800'
-                    }`}>
+                      'bg-blue-100 text-blue-800'}`}>
                       {user.role}
                     </span>
-                    <span className="ml-2 text-xs text-gray-500">
-                      {new Date(user.createdAt).toLocaleDateString()}
-                    </span>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-          <div className="p-3 bg-gray-50 border-t border-gray-200">
-            <Link to="/admin/users" className="text-blue-600 text-sm flex items-center justify-center">
-              View All Users
-              <svg className="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 7l5 5-5 5M5 7l5 5-5 5" />
-              </svg>
-            </Link>
-          </div>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    {new Date(user.createdAt).toLocaleDateString()}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
-        
-        {/* Recent Courses */}
-        <div className="bg-white rounded-lg shadow-md overflow-hidden">
-          <div className="p-4 bg-gray-50 border-b border-gray-200">
-            <h2 className="text-lg font-semibold text-gray-800">Recently Added Courses</h2>
-          </div>
-          <div className="divide-y divide-gray-200">
-            {recentCourses.map(course => (
-              <div key={course._id} className="p-4 hover:bg-gray-50 transition duration-150">
-                <div className="flex">
-                  <div className="h-16 w-24 flex-shrink-0">
-                    {course.coverImage ? (
-                      <img 
-                        src={course.coverImage} 
-                        alt={course.title} 
-                        className="h-16 w-24 rounded object-cover"
-                      />
-                    ) : (
-                      <div className="h-16 w-24 rounded bg-gray-200 flex items-center justify-center">
-                        <svg className="h-8 w-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                        </svg>
+      </div>
+      
+      {/* Recent Courses */}
+      <div className="bg-white rounded-lg shadow">
+        <div className="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
+          <h2 className="text-lg font-semibold text-gray-800">Recent Courses</h2>
+          <Link to="/dashboard/courses" className="text-blue-600 hover:text-blue-800 text-sm font-medium">
+            View All
+          </Link>
+        </div>
+        <div className="overflow-x-auto">
+          <table className="min-w-full divide-y divide-gray-200">
+            <thead className="bg-gray-50">
+              <tr>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Course
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Instructor
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Category
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Status
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Created
+                </th>
+              </tr>
+            </thead>
+            <tbody className="bg-white divide-y divide-gray-200">
+              {recentCourses.map(course => (
+                <tr key={course._id}>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div className="flex items-center">
+                      <div className="flex-shrink-0 h-10 w-10 bg-gray-200 rounded overflow-hidden">
+                        {course.thumbnail ? (
+                          <img src={course.thumbnail} alt="" className="h-10 w-10 object-cover" />
+                        ) : (
+                          <div className="h-10 w-10 flex items-center justify-center bg-gray-300">
+                            <svg className="h-6 w-6 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                            </svg>
+                          </div>
+                        )}
                       </div>
-                    )}
-                  </div>
-                  <div className="ml-3 flex-1">
-                    <p className="text-sm font-medium text-gray-900">{course.title}</p>
-                    <p className="text-xs text-gray-500">{course.category}</p>
-                    <div className="mt-1 flex items-center">
-                      <span className={`px-2 py-0.5 text-xs rounded-full ${
-                        course.isPublished ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'
-                      }`}>
-                        {course.isPublished ? 'Published' : 'Draft'}
-                      </span>
-                      <span className="ml-2 text-xs text-gray-500">
-                        by {course.instructor?.name || 'Unknown'}
-                      </span>
+                      <div className="ml-4">
+                        <div className="text-sm font-medium text-gray-900">{course.title}</div>
+                      </div>
                     </div>
-                  </div>
-                  <div className="ml-auto flex flex-col items-end">
-                    <span className="text-sm font-semibold">{course.studentsCount || 0} students</span>
-                    <span className="text-xs text-gray-500">
-                      {new Date(course.createdAt).toLocaleDateString()}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div className="text-sm text-gray-900">{course.instructor?.name || 'N/A'}</div>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div className="text-sm text-gray-500">{course.category || 'Uncategorized'}</div>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
+                      ${course.isPublished ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'}`}>
+                      {course.isPublished ? 'Published' : 'Draft'}
                     </span>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-          <div className="p-3 bg-gray-50 border-t border-gray-200">
-            <Link to="/admin/courses" className="text-green-600 text-sm flex items-center justify-center">
-              View All Courses
-              <svg className="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 7l5 5-5 5M5 7l5 5-5 5" />
-              </svg>
-            </Link>
-          </div>
-        </div>
-      </div>
-      
-      {/* Quick Actions */}
-      <div className="bg-white rounded-lg shadow-md p-6 mb-8">
-        <h2 className="text-xl font-semibold text-gray-800 mb-4">Quick Actions</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-          <Link to="/admin/users/new" className="p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition duration-150 flex flex-col items-center text-center">
-            <svg className="h-8 w-8 text-blue-500 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
-            </svg>
-            <span className="text-sm font-medium">Add New User</span>
-          </Link>
-          
-          <Link to="/admin/courses/new" className="p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition duration-150 flex flex-col items-center text-center">
-            <svg className="h-8 w-8 text-green-500 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-            <span className="text-sm font-medium">Create Course</span>
-          </Link>
-          
-          <Link to="/admin/reports" className="p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition duration-150 flex flex-col items-center text-center">
-            <svg className="h-8 w-8 text-purple-500 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-            </svg>
-            <span className="text-sm font-medium">Generate Reports</span>
-          </Link>
-          
-          <Link to="/admin/settings" className="p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition duration-150 flex flex-col items-center text-center">
-            <svg className="h-8 w-8 text-gray-500 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-            </svg>
-            <span className="text-sm font-medium">Platform Settings</span>
-          </Link>
-        </div>
-      </div>
-      
-      {/* System Health */}
-      <div className="bg-white rounded-lg shadow-md p-6">
-        <h2 className="text-xl font-semibold text-gray-800 mb-4">System Health</h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="border border-gray-200 rounded-lg p-4">
-            <div className="flex items-center justify-between mb-3">
-              <h3 className="text-sm font-medium text-gray-700">Server Status</h3>
-              <span className="px-2 py-1 text-xs rounded-full bg-green-100 text-green-800">Operational</span>
-            </div>
-            <div className="h-2 w-full bg-gray-200 rounded-full overflow-hidden">
-              <div className="bg-green-500 h-full rounded-full" style={{ width: '98%' }}></div>
-            </div>
-            <p className="text-xs text-gray-500 mt-2">98% Uptime</p>
-          </div>
-          
-          <div className="border border-gray-200 rounded-lg p-4">
-            <div className="flex items-center justify-between mb-3">
-              <h3 className="text-sm font-medium text-gray-700">Database</h3>
-              <span className="px-2 py-1 text-xs rounded-full bg-green-100 text-green-800">Healthy</span>
-            </div>
-            <div className="h-2 w-full bg-gray-200 rounded-full overflow-hidden">
-              <div className="bg-blue-500 h-full rounded-full" style={{ width: '65%' }}></div>
-            </div>
-            <p className="text-xs text-gray-500 mt-2">65% Storage Used</p>
-          </div>
-          
-          <div className="border border-gray-200 rounded-lg p-4">
-            <div className="flex items-center justify-between mb-3">
-              <h3 className="text-sm font-medium text-gray-700">API Requests</h3>
-              <span className="px-2 py-1 text-xs rounded-full bg-green-100 text-green-800">Normal</span>
-            </div>
-            <div className="h-2 w-full bg-gray-200 rounded-full overflow-hidden">
-              <div className="bg-purple-500 h-full rounded-full" style={{ width: '42%' }}></div>
-            </div>
-            <p className="text-xs text-gray-500 mt-2">42% of Capacity</p>
-          </div>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    {new Date(course.createdAt).toLocaleDateString()}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
       </div>
     </div>
